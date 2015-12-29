@@ -1,6 +1,7 @@
-import {Component} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 import {Hero} from './hero';
 import {HeroDetailComponent} from './hero-detail.component';
+import {HeroService} from './hero.service';
 
 @Component({
     selector: 'my-app',
@@ -30,28 +31,29 @@ import {HeroDetailComponent} from './hero-detail.component';
       }
       .selected { background-color: #EEE; color: #369; }
     `],
-    directives: [HeroDetailComponent]
+    directives: [HeroDetailComponent],
+    providers: [HeroService]
 })
-export class AppComponent {
-    public title = 'Tour Of Heroes';
-    public heroes = HEROES;
-    public selectedHero : Hero;
+export class AppComponent implements  OnInit {
 
-    onSelect(hero: Hero){
+    ngOnInit() {
+        this.getHeroes();
+    }
+
+    public title = 'Tour Of Heroes';
+    public heroes:Hero[];
+    public selectedHero:Hero;
+
+    constructor(private _heroService:HeroService) {
+    }
+
+    onSelect(hero:Hero) {
         this.selectedHero = hero;
+    }
+
+    getHeroes(){
+        //this.heroes = this._heroService.getHeroes();
+        this._heroService.getHeroes().then(heroes => this.heroes = heroes);
     }
 }
 
-
-var HEROES:Hero[] = [
-    {"id": 11, "name": "Mr. Nice"},
-    {"id": 12, "name": "Narco"},
-    {"id": 13, "name": "Bombasto"},
-    {"id": 14, "name": "Celeritas"},
-    {"id": 15, "name": "Magneta"},
-    {"id": 16, "name": "RubberMan"},
-    {"id": 17, "name": "Dynama"},
-    {"id": 18, "name": "Dr IQ"},
-    {"id": 19, "name": "Magma"},
-    {"id": 20, "name": "Tornado"}
-];
